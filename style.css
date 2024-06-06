@@ -1,0 +1,45 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #707a7e;
+    font-family: Arial, sans-serif;
+}
+
+.phone-container {
+    position: relative;
+    width: 300px;
+    height: 600px;
+}
+
+.phone-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
+.text-overlay {
+    position: absolute;
+    top: 5%; /* Adjust this value to match the position of the Nokia tag */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    color: #00FF00; /* Green color to match old Nokia screens */
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+canvas {
+    position: absolute;
+    top: 26%; /* Adjust this value to match the screen position */
+    left: 22%; /* Adjust this value to match the screen position */
+    width: 150px;
+    height: 130px;
+    background-color: #495054;
+    border: 2px solid #002200;
+    border-radius: 10px;
+    image-rendering: pixelated; /* Ensures the canvas has a pixelated look */
+}
