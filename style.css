@@ -8,10 +8,41 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.sidebar {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.left .highscore, .right .instructions {
+    background-color: #495054;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .phone-container {
     position: relative;
     width: 300px;
     height: 600px;
+    transition: all 0.5s ease;
 }
 
 .phone-image {
@@ -20,26 +51,65 @@ body {
     display: block;
 }
 
-
-.text-overlay {
-    position: absolute;
-    top: 5%; /* Adjust this value to match the position of the Nokia tag */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 20px;
-    color: #00FF00; /* Green color to match old Nokia screens */
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-}
-
 canvas {
     position: absolute;
     top: 26%; /* Adjust this value to match the screen position */
     left: 22%; /* Adjust this value to match the screen position */
-    width: 150px;
-    height: 130px;
+    width: 150px; /* Adjust to match the new canvas size */
+    height: 130px; /* Adjust to match the new canvas size */
     background-color: #495054;
     border: 2px solid #002200;
     border-radius: 10px;
     image-rendering: pixelated; /* Ensures the canvas has a pixelated look */
+}
+
+#numpad {
+    position: absolute;
+    top: 380px; /* Adjust according to the image */
+    left: 73px; /* Adjust according to the image */
+    display: grid;
+    grid-template-columns: repeat(3, 50px); /* Adjust button size */
+    grid-gap: 10px;
+}
+
+.num-key {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    color: transparent;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    outline: none; /* Prevent focus outline */
+}
+
+.num-key:focus {
+    outline: none; /* Prevent focus outline */
+}
+
+#toggleSizeButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #495054;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#phoneContainer.large {
+    width: 600px;
+    height: 800px;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#phoneContainer.large canvas {
+    width: 500px; /* Adjust to match the new canvas size */
+    height: 500px; /* Adjust to match the new canvas size */
 }
