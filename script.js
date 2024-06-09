@@ -1,27 +1,51 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const box = 9; // Size of the snake and food
-let snake = [];
-// let score = 0;
-snake[0] = { x: 9 * box, y: 9 * box };
+const box = 20; // Increased the size of the snake and food
+canvas.width = 20 * box; // Adjusted the canvas width to be a multiple of box size
+canvas.height = 20 * box; // Adjusted the canvas height to be a multiple of box size
 
+let snake = [{ x: 9 * box, y: 10 * box }];
 let food = {
-    x: Math.floor(Math.random() * 15) * box,
-    y: Math.floor(Math.random() * 15) * box
+    x: Math.floor(Math.random() * 20) * box,
+    y: Math.floor(Math.random() * 20) * box
 };
-
 let score = 0;
 let direction;
 let game;
+let highScore = localStorage.getItem('highScore') || 0;
+document.getElementById('highScore').textContent = highScore;
+document.getElementById('currentScore').textContent = score;
+
+let gameInitialized = false;
 
 // Load the snake head image
 const snakeHeadImg = new Image();
 snakeHeadImg.src = 'assets/pepe_head.png';
 
+// Load the logo image
+const logoImg = new Image();
+logoImg.src = 'assets/pepe_head.png'; // Replace with the actual logo image path
+
+// Display the logo initially
+logoImg.onload = function() {
+    ctx.drawImage(logoImg, (canvas.width - 100) / 2, (canvas.height - 100) / 2, 100, 100);
+};
+
+snakeHeadImg.onload = function() {
+    // Snake head image loaded successfully
+};
+
+snakeHeadImg.onerror = function() {
+    console.error("Failed to load snake head image.");
+};
+
 document.addEventListener("keydown", directionControl);
 
 function directionControl(event) {
+    if ([37, 38, 39, 40].includes(event.keyCode)) {
+        event.preventDefault(); // Prevent arrow keys from focusing buttons
+    }
     if (event.keyCode === 37 && direction !== "RIGHT") {
         direction = "LEFT";
     } else if (event.keyCode === 38 && direction !== "DOWN") {
@@ -71,9 +95,10 @@ function draw() {
 
     if (snakeX === food.x && snakeY === food.y) {
         score++;
+        document.getElementById('currentScore').textContent = score;
         food = {
-            x: Math.floor(Math.random() * 15) * box,
-            y: Math.floor(Math.random() * 15) * box
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
         };
     } else {
         snake.pop();
@@ -92,36 +117,71 @@ function draw() {
     }
 
     snake.unshift(newHead);
-
-    ctx.fillStyle = "#9ba8ae";
-    ctx.font = "20px Arial";
-    ctx.fillText(score, 1 * box, 1.6 * box);
 }
 
 function gameOver() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     ctx.fillStyle = "#9ba8ae";
-    ctx.font = "20px Arial";
-    ctx.fillText(" $733733", canvas.width / 4, canvas.height / 2 - 20);
-    ctx.fillText("    Play", canvas.width / 4, canvas.height / 2 + 10);
-    ctx.fillText("Score: " + score, canvas.width / 4, canvas.height / 2 + 40);
+    ctx.font = "30px Arial";
+    ctx.fillText("Game Over", canvas.width / 4, canvas.height / 2 - 20);
+    ctx.fillText("Score: " + score, canvas.width / 4, canvas.height / 2 + 10);
 
-    canvas.addEventListener("click", resetGame);d
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+        document.getElementById('highScore').textContent = highScore;
+    }
+
+    canvas.addEventListener('click', resetGame, { once: true });
 }
 
 function resetGame() {
-    snake = [];
-    snake[0] = { x: 8 * box, y: 8 * box };
-    food = {
-        x: Math.floor(Math.random() * 15) * box,
-        y: Math.floor(Math.random() * 15) * box
-    };
     score = 0;
+    document.getElementById('currentScore').textContent = score;
     direction = null;
-    canvas.removeEventListener("click", resetGame);
-    game = setInterval(draw, 100);
+    snake = [{ x: 9 * box, y: 10 * box }];
+    food = {
+        x: Math.floor(Math.random() * 20) * box,
+        y: Math.floor(Math.random() * 20) * box
+    };
+    clearInterval(game);
+    game = setInterval(draw, 110); // Adjust speed here
 }
 
-snakeHeadImg.onload = function() {
-    game = setInterval(draw, 100);
+let sequence = "";
+const startSequence = "733733";
+
+document.querySelectorAll(".num-key").forEach(button => {
+    button.addEventListener("click", (event) => {
+        const value = event.target.getAttribute("data-value");
+        sequence += value;
+        console.log(`Button pressed: ${value}, current sequence: ${sequence}`);
+
+        if (sequence === startSequence) {
+            console.log("Starting game...");
+            sequence = "";
+            gameInitialized = true;
+            startGame();
+        } else if (!startSequence.startsWith(sequence)) {
+            console.log("Resetting sequence...");
+            sequence = "";
+        }
+    });
+});
+
+function startGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    direction = null;
+    score = 0;
+    snake = [{ x: 9 * box, y: 10 * box }];
+    food = {
+        x: Math.floor(Math.random() * 20) * box,
+        y: Math.floor(Math.random() * 20) * box
+    };
+    if (!gameInitialized) {
+        sequence = "";
+        return;
+    }
+    game = setInterval(draw, 110); // Adjust speed here
+    console.log("Game started.");
 }
